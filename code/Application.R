@@ -1,26 +1,26 @@
+setwd("C:/Users/Lenovo/Desktop/git/STAT4011-Project-2")
 #Step 1: data pre-processing----------------------------------------------------
 #visitors
-data1<-read.csv("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2/data/visitors_rawdata.csv")
+data1<-read.csv("data/visitors_rawdata.csv")
 samplesize=60
 a<-nrow(data1)
-b<-a1-(samplesize-1)
+b<-a-(samplesize-1)
 x1<-data1[b:a,]
 c1<-as.numeric(gsub(",", "", x1$Unique.Visits))
-mean1<-mean(c1)
-sd1<-sd(c1)
-Unique.Visits<-(c1-mean1)/sd1
+Unique.Visits<-c1
 data1<-matrix(Unique.Visits,ncol=1)
 colnames(data1)="x"
 
 #sales
-data2<-read.csv("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2/data/sales_rawdata.csv")
-#samplesize=100
-#data2<-matrix(data2[1:samplesize,]$ProductP4,ncol=1)
-#colnames(data2)="x"
+data2<-read.csv("data/sales_rawdata.csv")
+a<-nrow(data2)
+b<-a-(samplesize-1)
+x2<-data2[b:a,]
+x2=x2$ProductP1
+x2=(x2-mean(x2))/sd(x2)
 
 
 #Step 2: Model Selection--------------------------------------------------------
-setwd("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2")
 source("code/DGP.r")
 source('code/EM_gaus.r')
 source('code/EM_pois.R')
@@ -28,7 +28,6 @@ source("code/viterbi_gaus.R")
 source("code/viterbi_pois.R")
 
 #sales
-x2=c(data2$ProductP1)
 gaus_mean_x2=mean(x2)
 gaus_sd_last_x2=sqrt(var(x2))
 len_table=length(2:4)+1
@@ -56,7 +55,6 @@ aic_bic_x2[2,len_table]=as.numeric(which.min(aic_bic_x2[2,])+1)
 print(aic_bic_x2)
 
 #Step 3: Parameter Estimation---------------------------------------------------
-
 m=as.numeric(aic_bic_x2[1,len_table])
 initP_last=rep(1/m,m)
 transP_last=matrix(1/m,m,m)
@@ -65,7 +63,7 @@ gaus_sd_last=rep(gaus_sd_last_x2,m)
 
 list_mstep_para_gaus=EM_gaus(T=length(x2),m,x2,gaus_mean_last,gaus_sd_last,
                              transP_last,initP_last,
-                             num_ite=10^4,tol=10^(-10))
+                             num_ite=10^4,tol=10^(-200))
 
 gaus_mean_est_x2=list_mstep_para_gaus$gaus_mean
 gaus_var_est_x2=list_mstep_para_gaus$gaus_var
