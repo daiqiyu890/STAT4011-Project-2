@@ -6,15 +6,15 @@ samplesize=60
 a<-nrow(data1)
 b<-a-(samplesize-1)
 x1<-data1[b:a,]
-<<<<<<< Updated upstream
+
 c1<-as.numeric(gsub(",", "", x1$Unique.Visits))
 Unique.Visits<-c1
-=======
+
 x1<-as.numeric(gsub(",", "", x1$Unique.Visits))
 mean1<-mean(c1)
 sd1<-sd(c1)
 Unique.Visits<-(c1-mean1)/sd1
->>>>>>> Stashed changes
+
 data1<-matrix(Unique.Visits,ncol=1)
 colnames(data1)="x"
 
@@ -35,10 +35,8 @@ source("code/viterbi_gaus.R")
 source("code/viterbi_pois.R")
 
 #sales
-<<<<<<< Updated upstream
-=======
+
 x2=c(data2$ProductP4)
->>>>>>> Stashed changes
 gaus_mean_x2=mean(x2)
 gaus_sd_last_x2=sqrt(var(x2))
 len_table=length(2:4)+1
@@ -176,13 +174,12 @@ par(new=TRUE)
 plot(path,type = "l",col="red")
 
 #Step 3: Parameter Estimation---------------------------------------------------
-<<<<<<< Updated upstream
+
 m=as.numeric(aic_bic_x2[1,len_table])
-=======
 
 #m=as.numeric(aic_bic_x2[1,len_table])
 m=4
->>>>>>> Stashed changes
+
 initP_last=rep(1/m,m)
 transP_last=matrix(1/m,m,m)
 gaus_mean_last=rep(10,m)
@@ -190,11 +187,8 @@ gaus_sd_last=rep(10,m)
 
 list_mstep_para_gaus_est=EM_gaus(T=length(x2),m,x2,gaus_mean_last,gaus_sd_last,
                              transP_last,initP_last,
-<<<<<<< Updated upstream
                              num_ite=10^4,tol=10^(-200))
-=======
                              num_ite=10^4,tol=10^(-3))
->>>>>>> Stashed changes
 
 gaus_mean_est_x2=list_mstep_para_gaus_est$gaus_mean
 gaus_var_est_x2=list_mstep_para_gaus_est$gaus_var
