@@ -273,7 +273,7 @@ for(iRep in 1:nRep){
   initP_last=initP_true[1:(m-1)]+sample(noise_seq,size=(m-1))
   initP_last=c(initP_last,1-sum(initP_last))
   transP_last=transP_true+matrix(sample(noise_seq,size=m^2),
-                                 nrow=m_test,ncol=m_test)
+                                 nrow=m,ncol=m)
 
   transP_last[1:m,m]=1-rowSums(as.matrix(transP_last[,-m],nrow=m))
   lambda_last=lambda_true+sample(noise_seq,size=m)
@@ -327,3 +327,88 @@ png(file_name)
 plot(density(decoding[,T+1]),xlab="accuracy",ylab="density",
      main="density of accuracy over replications")
 dev.off()
+
+
+#Step 2.4 Test AIC BIC, in terms of model selection
+model_sele=function(m_test){
+  if(m_test==2){
+    initP_true=c(0.2,0.8) #initial distribution of Hidden Markov States
+    transP_true=matrix(c(0.8,0.2,0.25,0.75),nrow=m_test,byrow=TRUE)
+    gaus_sd_true=sqrt(c(1,4))
+    gaus_mean_true=c(0,4)
+  } else if(m_test==3){
+    initP_true=c(0.1,0.3,0.6) #initial distribution of Hidden Markov States
+    transP_true=matrix(c(0.1,0.2,0.7,
+                         0.25,0.5,0.25,
+                         0.4,0.15,0.45),nrow=m_test,byrow=TRUE)
+    gaus_sd_true=sqrt(c(1,4,2))
+    gaus_mean_true=c(0,2,4)  
+  } else if(m_test==4){
+    initP_true=c(0.1,0.3,0.2,0.4) #initial distribution of Hidden Markov States
+    transP_true=matrix(c(0.1,0.2,0.25,0.45,
+                         0.15,0.4,0.15,0.3,
+                         0.22,0.32,0.2,0.26,
+                         0.08,0.42,0.3,0.2),
+                       nrow=m_test,byrow=TRUE)
+    gaus_sd_true=sqrt(c(1,4,2,3))
+    gaus_mean_true=c(0,2,3,4)  
+  }
+  
+  initP_last=initP_true[1:(m_test-1)]+sample(noise_seq,size=(m_test-1))
+  initP_last=c(initP_last,1-sum(initP_last))
+  transP_last=transP_true+matrix(sample(noise_seq,size=m_test^2),
+                                 nrow=m_test,ncol=m_test)
+  
+  transP_last[1:m_test,m_test]=1-rowSums(as.matrix(transP_last[,-m_test],nrow=m_test))
+  gaus_sd_last=gaus_sd_true+sample(noise_seq,size=m_test)
+  gaus_mean_last=gaus_mean_true+sample(noise_seq,size=m_test)
+  
+  list_mstep_para_gaus=EM_gaus(T,m_test,x,gaus_mean_last,gaus_sd_last,
+                               transP_last,initP_last,
+                               num_ite=10^4,tol=10^(-3))
+  return(list_mstep_para_gaus)
+}
+
+best_model=array(NA,dim=c(nRep,8),dimnames=list(paste0("iRep=",1:nRep),
+                                                c("AIC_2","BIC_2","AIC_3","BIC_3",
+                                                  "AIC_4","BIC_4","AIC_m","BIC_m")))
+
+
+for(iRep in 1:nRep){
+  set.seed(iRep)
+  data=DGP_gaus(T,transP_true,initP_true,gaus_mean_true,gaus_sd_true)
+  x=data$X
+  
+  list_mstep_para_gaus2=model_sele(m_test=2)
+  list_mstep_para_gaus3=model_sele(m_test=3)
+  list_mstep_para_gaus4=model_sele(m_test=4)
+  if(!(is.null(list_mstep_para_gaus2) | is.null(list_mstep_para_gaus3) | 
+       is.null(list_mstep_para_gaus4))){
+    best_model[iRep,"AIC_2"]=list_mstep_para_gaus2$aic
+    best_model[iRep,"BIC_2"]=list_mstep_para_gaus2$bic
+    
+    
+    best_model[iRep,"AIC_3"]=list_mstep_para_gaus3$aic
+    best_model[iRep,"BIC_3"]=list_mstep_para_gaus3$bic
+    
+    best_model[iRep,"AIC_4"]=list_mstep_para_gaus4$aic
+    best_model[iRep,"BIC_4"]=list_mstep_para_gaus4$bic
+    
+    best_model[iRep,"AIC_m"]=as.numeric(which.min(best_model[iRep,c(1,3,5)])+1)
+    best_model[iRep,"BIC_m"]=as.numeric(which.min(best_model[iRep,c(2,4,6)])+1)
+  }
+  
+  print(iRep)
+}
+
+if(length(which(is.na(best_model[,1])))){
+  best_model=best_model[-which(is.na(best_model[,1])),]
+}
+
+file_name=paste0("output/model_sele_m=",m,".csv")
+write.csv(best_model,file=file_name)
+print(paste0("AIC select the correct model in ",
+             sum(best_model[,7]==m)*100/nrow(best_model),"% cases"))
+
+print(paste0("BIC select the correct model in ",
+             sum(best_model[,8]==m)*100/nrow(best_model),"% cases"))
