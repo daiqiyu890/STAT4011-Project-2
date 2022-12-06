@@ -16,7 +16,7 @@ source("code/viterbi_pois.R")
 
 #Step 2: Simulation for Gaussian------------------------------------------------
 #Step 2.1: Set up
-m=4
+m=2
 T=60
 nRep=10^3
 #ture parameters
