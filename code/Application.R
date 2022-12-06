@@ -188,7 +188,6 @@ gaus_sd_last=rep(10,m)
 list_mstep_para_gaus_est=EM_gaus(T=length(x2),m,x2,gaus_mean_last,gaus_sd_last,
                              transP_last,initP_last,
                              num_ite=10^4,tol=10^(-200))
-                             num_ite=10^4,tol=10^(-3))
 
 gaus_mean_est_x2=list_mstep_para_gaus_est$gaus_mean
 gaus_var_est_x2=list_mstep_para_gaus_est$gaus_var
