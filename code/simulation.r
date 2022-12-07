@@ -117,7 +117,7 @@ gaus_MSE=array(dim=c(4,m*3+m^2),dimnames=list(c("truth","bias","variance","MSE")
                                           transP_name)))
 gaus_MSE[1,]=gaus_para_true
 gaus_MSE[2,]=apply(gaus_out[,-(1:3)],MARGIN=2,FUN=mean)-gaus_para_true
-gaus_MSE[3,]=apply(gaus_out[,-(1:3)],MARGIN=2,FUN=var)
+gaus_MSE[3,]=apply(gaus_out[,-(1:3)],MARGIN=2,FUN=var)*(T-1)/T
 gaus_MSE[4,]=(gaus_MSE[2,])^2+gaus_MSE[3,]
 file_name=paste0("output/gaus_MSE_m",m,".csv")
 write.csv(gaus_MSE,file_name)
@@ -314,7 +314,7 @@ pois_MSE=array(dim=c(4,m*2+m^2),dimnames=list(c("truth","bias","variance","MSE")
                                                 transP_name)))
 pois_MSE[1,]=pois_para_true
 pois_MSE[2,]=apply(pois_out[,-(1:3)],MARGIN=2,FUN=mean)-pois_para_true
-pois_MSE[3,]=apply(pois_out[,-(1:3)],MARGIN=2,FUN=var)
+pois_MSE[3,]=(apply(pois_out[,-(1:3)],MARGIN=2,FUN=var))*(T-1)/T
 pois_MSE[4,]=(pois_MSE[2,])^2+pois_MSE[3,]
 file_name=paste0("output/pois_MSE_m",m,".csv")
 write.csv(pois_MSE,file_name)
