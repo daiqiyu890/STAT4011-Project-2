@@ -5,8 +5,8 @@ NewPackages=PackageList[!(PackageList %in%
                             installed.packages()[,"Package"])]
 if(length(NewPackages)) install.packages(NewPackages)
 lapply(PackageList,require,character.only=TRUE)
-setwd("C:/Users/s1155141616/Documents/GitHub/STAT4011-Project-2")
 # setwd("C:/Users/Lenovo/Desktop/git/STAT4011-Project-2")
+setwd("C:/Users/s1155141616/Documents/GitHub/STAT4011-Project-2")
 # setwd("/Users/jiangyunhui/Downloads/STAT4011proj2")
 source("code/DGP.r")
 source('code/EM_gaus.r')
@@ -33,7 +33,7 @@ if(m==2){
                        0.25,0.5,0.25,
                        0.4,0.15,0.45),nrow=m,byrow=TRUE)
   gaus_sd_true=sqrt(c(1,4,2))
-  gaus_mean_true=c(0,2,4)  
+  gaus_mean_true=c(0,2,4)
 } else if(m==4){
   initP_true=c(0.1,0.3,0.2,0.4) #initial distribution of Hidden Markov States
   transP_true=matrix(c(0.1,0.2,0.25,0.45,
@@ -42,7 +42,7 @@ if(m==2){
                        0.08,0.42,0.3,0.2),
                      nrow=m,byrow=TRUE)
   gaus_sd_true=sqrt(c(1,4,2,3))
-  gaus_mean_true=c(0,2,3,4)  
+  gaus_mean_true=c(0,2,3,4)
 }
 
 gaus_para_true=c(gaus_mean_true,gaus_sd_true^2,initP_true,
@@ -72,13 +72,13 @@ for(iRep in 1:nRep){
   set.seed(iRep)
   data=DGP_gaus(T,transP_true,initP_true,gaus_mean_true,gaus_sd_true)
   x=data$X
-  
+
   initP_last=initP_true[1:(m-1)]+sample(noise_seq,size=(m-1))
   initP_last=c(initP_last,1-sum(initP_last))
   transP_last=transP_true+matrix(sample(noise_seq,size=m^2),
                                  nrow=m,ncol=m)
   transP_last[1:m,m]=1-rowSums(as.matrix(transP_last[,-m],nrow=m))
-  
+
   gaus_sd_last=gaus_sd_true+sample(noise_seq,size=m)
   gaus_mean_last=gaus_mean_true+sample(noise_seq,size=m)
   list_mstep_para_gaus=EM_gaus(T,m,x,gaus_mean_last,gaus_sd_last,
@@ -144,7 +144,7 @@ model_sele=function(m_test){
                          0.25,0.5,0.25,
                          0.4,0.15,0.45),nrow=m_test,byrow=TRUE)
     gaus_sd_true=sqrt(c(1,4,2))
-    gaus_mean_true=c(0,2,4)  
+    gaus_mean_true=c(0,2,4)
   } else if(m_test==4){
     initP_true=c(0.1,0.3,0.2,0.4) #initial distribution of Hidden Markov States
     transP_true=matrix(c(0.1,0.2,0.25,0.45,
@@ -153,18 +153,18 @@ model_sele=function(m_test){
                          0.08,0.42,0.3,0.2),
                        nrow=m_test,byrow=TRUE)
     gaus_sd_true=sqrt(c(1,4,2,3))
-    gaus_mean_true=c(0,2,3,4)  
+    gaus_mean_true=c(0,2,3,4)
   }
-  
+
   initP_last=initP_true[1:(m_test-1)]+sample(noise_seq,size=(m_test-1))
   initP_last=c(initP_last,1-sum(initP_last))
   transP_last=transP_true+matrix(sample(noise_seq,size=m_test^2),
                                  nrow=m_test,ncol=m_test)
-  
+
   transP_last[1:m_test,m_test]=1-rowSums(as.matrix(transP_last[,-m_test],nrow=m_test))
   gaus_sd_last=gaus_sd_true+sample(noise_seq,size=m_test)
   gaus_mean_last=gaus_mean_true+sample(noise_seq,size=m_test)
-  
+
   list_mstep_para_gaus=EM_gaus(T,m_test,x,gaus_mean_last,gaus_sd_last,
                                transP_last,initP_last,
                                num_ite=10^4,tol=10^(-3))
@@ -180,26 +180,26 @@ for(iRep in 1:nRep){
   set.seed(iRep)
   data=DGP_gaus(T,transP_true,initP_true,gaus_mean_true,gaus_sd_true)
   x=data$X
-  
+
   list_mstep_para_gaus2=model_sele(m_test=2)
   list_mstep_para_gaus3=model_sele(m_test=3)
   list_mstep_para_gaus4=model_sele(m_test=4)
-  if(!(is.null(list_mstep_para_gaus2) | is.null(list_mstep_para_gaus3) | 
+  if(!(is.null(list_mstep_para_gaus2) | is.null(list_mstep_para_gaus3) |
       is.null(list_mstep_para_gaus4))){
     best_model[iRep,"AIC_2"]=list_mstep_para_gaus2$aic
     best_model[iRep,"BIC_2"]=list_mstep_para_gaus2$bic
-    
+
 
     best_model[iRep,"AIC_3"]=list_mstep_para_gaus3$aic
     best_model[iRep,"BIC_3"]=list_mstep_para_gaus3$bic
 
     best_model[iRep,"AIC_4"]=list_mstep_para_gaus4$aic
     best_model[iRep,"BIC_4"]=list_mstep_para_gaus4$bic
-    
+
     best_model[iRep,"AIC_m"]=as.numeric(which.min(best_model[iRep,c(1,3,5)])+1)
     best_model[iRep,"BIC_m"]=as.numeric(which.min(best_model[iRep,c(2,4,6)])+1)
   }
-  
+
   print(iRep)
 }
 
@@ -218,7 +218,7 @@ print(paste0("BIC select the correct model in ",
 
 #Step 3 Simulation for Poisson--------------------------------------------------
 #Step 3.1 Set up
-m=4
+m=3
 T=60
 nRep=10^3
 #ture parameters
@@ -269,7 +269,7 @@ for(iRep in 1:nRep){
   set.seed(iRep)
   data=DGP_pois(T,transP_true,initP_true,lambda_true)
   x=data$X
-  
+
   initP_last=initP_true[1:(m-1)]+sample(noise_seq,size=(m-1))
   initP_last=c(initP_last,1-sum(initP_last))
   transP_last=transP_true+matrix(sample(noise_seq,size=m^2),
@@ -288,8 +288,8 @@ for(iRep in 1:nRep){
     pois_out[iRep,4:(3+m)]=list_mstep_para_pois$lambda
     pois_out[iRep,(4+m):(3+2*m)]=list_mstep_para_pois$initP
     pois_out[iRep,(4+2*m):(3+2*m+m^2)]=as.vector(list_mstep_para_pois$transP)
- 
-    
+
+
     decoding[iRep,1:T]=viterbi_pois(list_mstep_para_pois$initP,
                                     list_mstep_para_pois$transP,
                                     list_mstep_para_pois$lambda,
@@ -350,16 +350,16 @@ model_sele=function(m_test){
                        nrow=m_test,byrow=TRUE)
     lambda_true=c(1,3,5,7)
   }
-  
+
   initP_last=initP_true[1:(m_test-1)]+sample(noise_seq,size=(m_test-1))
   initP_last=c(initP_last,1-sum(initP_last))
   transP_last=transP_true+matrix(sample(noise_seq,size=m_test^2),
                                  nrow=m_test,ncol=m_test)
-  
+
   transP_last[1:m_test,m_test]=
     1-rowSums(as.matrix(transP_last[,-m_test],nrow=m_test))
   lambda_last=lambda_true+sample(noise_seq,size=m_test)
-  
+
   list_mstep_para_pois=EM_pois(T,m_test,x,lambda_last,
                                transP_last,initP_last,
                                num_ite=10^4,tol=10^(-3))
@@ -375,25 +375,25 @@ for(iRep in 1:nRep){
   set.seed(iRep)
   data=DGP_pois(T,transP_true,initP_true,lambda_true)
   x=data$X
-  
+
   list_mstep_para_pois2=model_sele(m_test=2)
   list_mstep_para_pois3=model_sele(m_test=3)
   list_mstep_para_pois4=model_sele(m_test=4)
-  if(!(is.null(list_mstep_para_pois2) | is.null(list_mstep_para_pois3) | 
+  if(!(is.null(list_mstep_para_pois2) | is.null(list_mstep_para_pois3) |
        is.null(list_mstep_para_pois4))){
     best_model[iRep,"AIC_2"]=list_mstep_para_pois2$aic
     best_model[iRep,"BIC_2"]=list_mstep_para_pois2$bic
-    
+
     best_model[iRep,"AIC_3"]=list_mstep_para_pois3$aic
     best_model[iRep,"BIC_3"]=list_mstep_para_pois3$bic
-    
+
     best_model[iRep,"AIC_4"]=list_mstep_para_pois4$aic
     best_model[iRep,"BIC_4"]=list_mstep_para_pois4$bic
-    
+
     best_model[iRep,"AIC_m"]=as.numeric(which.min(best_model[iRep,c(1,3,5)])+1)
     best_model[iRep,"BIC_m"]=as.numeric(which.min(best_model[iRep,c(2,4,6)])+1)
   }
-  
+
   print(iRep)
 }
 
