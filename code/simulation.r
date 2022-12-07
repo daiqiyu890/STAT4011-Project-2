@@ -5,7 +5,7 @@ NewPackages=PackageList[!(PackageList %in%
                             installed.packages()[,"Package"])]
 if(length(NewPackages)) install.packages(NewPackages)
 lapply(PackageList,require,character.only=TRUE)
-setwd("C:/Users/s1155141616/Documents/GitHub/STAT4011-Project-2")
+setwd("/Users/alysonmak/Desktop/github desktop/STAT4011-Project-2")
 # setwd("C:/Users/Lenovo/Desktop/git/STAT4011-Project-2")
 # setwd("/Users/jiangyunhui/Downloads/STAT4011proj2")
 source("code/DGP.r")
@@ -17,7 +17,7 @@ source("code/viterbi_pois.R")
 
 #Step 2: Simulation for Gaussian------------------------------------------------
 #Step 2.1: Set up
-m=4
+m=2
 T=60
 nRep=10^3
 #ture parameters
@@ -218,7 +218,7 @@ print(paste0("BIC select the correct model in ",
 
 #Step 3 Simulation for Poisson--------------------------------------------------
 #Step 3.1 Set up
-m=3
+m=2
 T=60
 nRep=10^3
 #ture parameters
