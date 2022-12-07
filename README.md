@@ -1,5 +1,6 @@
 # STAT4011-Project-2
 
+Gaussian Simulation
 (1) Change wd: Line 8;
 
 (2) change m (Line 20)
@@ -8,3 +9,5 @@
 
 (4) Line 18-Line 123 
 
+
+Poisson Simulation
