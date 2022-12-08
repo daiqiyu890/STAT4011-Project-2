@@ -7,25 +7,23 @@ samplesize=60
 a<-nrow(data1)
 b<-a-(samplesize-1)
 x1<-data1[b:a,]
-
 c1<-as.numeric(gsub(",", "", x1$Unique.Visits))
-Unique.Visits<-c1
-
-x1<-as.numeric(gsub(",", "", x1$Unique.Visits))
-mean1<-mean(c1)
-sd1<-sd(c1)
-Unique.Visits<-(c1-mean1)/sd1
-
-data1<-matrix(Unique.Visits,ncol=1)
+data1<-matrix(c1,ncol=1)
 colnames(data1)="x"
 
-#sales
-data2<-read.csv("data/sales_rawdata.csv")
-a<-nrow(data2)
-b<-a-(samplesize-1)
-x2<-data2[b:a,]
-x2=x2$ProductP1
-x2=(x2-mean(x2))/sd(x2)
+#energy
+data2<-read.csv("data/energy_rawdata.csv")
+x2<-data2[1:samplesize,]
+c1<-as.numeric(gsub(",", "", x2$Energy.Consumption..kWh.))
+data2<-matrix(c1,ncol=1)
+colnames(data2)="x"
+
+#accident
+data3<-read.csv("data/accident_rawdata.csv")
+x3<-data3[1:samplesize,]
+c1<-as.numeric(gsub(",", "", x3$Total_Accident))
+data3<-matrix(c1,ncol=1)
+colnames(data3)="x"
 
 
 #Step 2: Model Selection--------------------------------------------------------
