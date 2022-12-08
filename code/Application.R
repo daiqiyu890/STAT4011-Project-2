@@ -1,4 +1,4 @@
-setwd("C:/Users/Lenovo/Desktop/git/STAT4011-Project-2")
+setwd("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2")
 #Step 1: data pre-processing----------------------------------------------------
 #visitors
 data1<-read.csv("data/visitors_rawdata.csv")
@@ -11,12 +11,6 @@ c1<-as.numeric(gsub(",", "", x1$Unique.Visits))
 data1<-matrix(c1,ncol=1)
 colnames(data1)="x"
 
-#energy
-data2<-read.csv("data/energy_rawdata.csv")
-x2<-data2[1:samplesize,]
-c1<-as.numeric(gsub(",", "", x2$Energy.Consumption..kWh.))
-data2<-matrix(c1,ncol=1)
-colnames(data2)="x"
 
 #accident
 data3<-read.csv("data/accident_rawdata.csv")
@@ -117,12 +111,30 @@ path[path==2]=gaus_mean_est_x4[2]
 path[path==3]=gaus_mean_est_x4[3]
 #path[path==4]=gaus_mean[4]
 path
-plot(x4,type = "l")
+par(mar = c(3, 3, 3, 8), xpd = TRUE)
+plot(x4,type = "l",xlab = "time",ylab = "")
 par(new=TRUE)
-plot(path,type = "l",col="red")
-
-
-
+plot(path,type = "l",col="red",ylab = "",yaxt='n',xlab = "")
+legend("topright", inset=c(-0.4, 0),legend=c("data", "viterbi result"),
+       col=c("black", "red"),lty=1:2,cex = 0.6)
+# density compare
+T=500
+s=rep(NA,T)
+xr=rep(NA,T)
+p_t=initP_est_x4
+s[1]=which.max(p_t)
+xr[1]=rnorm(1,gaus_mean_est_x4[s[1]],sqrt(gaus_var_est_x4[s[1]]))
+for (t in 2:T){
+  p_t=initP_est_x4%*%transP_est_x4
+  s[t]=which.max(p_t)
+  xr[t]=rnorm(1,gaus_mean_est_x4[s[t]],sqrt(gaus_var_est_x4[s[t]]))
+}
+par(mar = c(2, 2, 2, 7), xpd = TRUE)
+plot(density(x4))
+par(new=TRUE)
+plot(density(xr),col="red",yaxt="n",xaxt="n")
+legend("topright", inset=c(-0.25, 0),legend=c("original data", "estimated"),
+       col=c("black", "red"),lty=1:2,cex = 0.6)
 #pois==============================
 # visitor
 #model select
@@ -178,9 +190,12 @@ path[path==2]=lambda_est_x1[2]
 #path[path==3]=gaus_mean[3]
 #path[path==4]=gaus_mean[4]
 path
-plot(x1,type = "l")
+par(mar = c(3, 3, 3, 8), xpd = TRUE)
+plot(x1,type = "l",xlab = "time",ylab = "")
 par(new=TRUE)
-plot(path,type = "l",col="red")
+plot(path,type = "l",col="red",ylab = "",yaxt='n',xlab = "")
+legend("topright", inset=c(-0.4, 0),legend=c("data", "viterbi result"),
+       col=c("black", "red"),lty=1:2,cex = 0.6)
 
 #accident===============================
 #model select
@@ -233,9 +248,12 @@ path[path==2]=lambda_est_x3[2]
 path[path==3]=lambda_est_x3[3]
 #path[path==4]=gaus_mean[4]
 path
-plot(x3,type = "l")
+par(mar = c(3, 3, 3, 8), xpd = TRUE)
+plot(x3,type = "l",xlab = "time",ylab = "")
 par(new=TRUE)
-plot(path,type = "l",col="red")
+plot(path,type = "l",col="red",ylab = "",yaxt='n',xlab = "")
+legend("topright", inset=c(-0.4, 0),legend=c("data", "viterbi result"),
+       col=c("black", "red"),lty=1:2,cex = 0.6)
 
 #Step 3: Parameter Estimation---------------------------------------------------
 #viterbi x2
@@ -267,10 +285,29 @@ path[path==2]=gaus_mean[2]
 #path[path==3]=gaus_mean[3]
 #path[path==4]=gaus_mean[4]
 path
-plot(x2,type = "l")
+par(mar = c(3, 3, 3, 8), xpd = TRUE)
+plot(x2,type = "l",xlab = "time",ylab = "")
 par(new=TRUE)
-plot(path,type = "l",col="red")
+plot(path,type = "l",col="red",ylab = "",yaxt='n',xlab = "")
+legend("topright", inset=c(-0.4, 0),legend=c("data", "viterbi result"),
+       col=c("black", "red"),lty=1:2,cex = 0.6)
 
+T=500
+s=rep(NA,T)
+xr=rep(NA,T)
+p_t=initP
+s[1]=which.max(p_t)
+xr[1]=rnorm(1,gaus_mean[s[1]],sqrt(gaus_var[s[1]]))
+for (t in 2:T){
+  p_t=initP%*%transP
+  s[t]=which.max(p_t)
+  xr[t]=rnorm(1,gaus_mean[s[t]],sqrt(gaus_var[s[t]]))
+}
+plot(density(x2))
+par(new=TRUE)
+plot(density(xr),col="red")
+legend("topright", inset=c(-0.4, 0),legend=c("original data", "estimated"),
+       col=c("black", "red"),lty=1:2,cex = 0.6)
 #Step 4: Forecast---------------------------------------------------------------
 
 
