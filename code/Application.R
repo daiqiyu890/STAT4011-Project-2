@@ -45,7 +45,7 @@ aic_bic_x2=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 
 for (m in 2:4){
   #m=3
-  initP_last=rep(1/m,m)
+  initP_last=rep(1/m,m) 
   transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
   gaus_mean_last=rep(gaus_mean_x2,m)
   gaus_sd_last=rep(gaus_sd_last_x2,m)
