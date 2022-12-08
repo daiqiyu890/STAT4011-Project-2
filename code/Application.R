@@ -29,6 +29,7 @@ x2=(x2-mean(x2))/sd(x2)
 
 
 #Step 2: Model Selection--------------------------------------------------------
+setwd("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2")
 source("code/DGP.r")
 source('code/EM_gaus.r')
 source('code/EM_pois.R')
@@ -46,7 +47,7 @@ aic_bic_x2=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=3
   initP_last=rep(1/m,m) 
-  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+  transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
   gaus_mean_last=rep(gaus_mean_x2,m)
   gaus_sd_last=rep(gaus_sd_last_x2,m)
   
@@ -68,8 +69,6 @@ print(aic_bic_x2)
 data4=read.csv("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2/data/energy_first_60.csv")
 x4=data4$x
 plot(density(x4))
-
-x4=c(data2$ProductP4)
 gaus_mean_x4=mean(x4)
 gaus_sd_last_x4=sqrt(var(x4))
 len_table=length(2:4)+1
@@ -78,17 +77,13 @@ aic_bic_x4=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=3
   initP_last=rep(1/m,m)
-<<<<<<< Updated upstream
-  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
-=======
-  transP_last=matrix(1/m,m,m)
->>>>>>> Stashed changes
+  transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
   gaus_mean_last=rep(gaus_mean_x4,m)
   gaus_sd_last=rep(gaus_sd_last_x4,m)
   
   list_mstep_para_gaus=EM_gaus(T=length(x4),m,x4,gaus_mean_last,gaus_sd_last,
                                transP_last,initP_last,
-                               num_ite=10^4,tol=10^(-3))
+                               num_ite=10^4,tol=10^(-10))
   
   aic_x4_m=list_mstep_para_gaus$aic
   bic_x4_m=list_mstep_para_gaus$bic
@@ -99,17 +94,10 @@ for (m in 2:4){
 aic_bic_x4[1,len_table]=as.numeric(which.min(aic_bic_x4[1,])+1)
 aic_bic_x4[2,len_table]=as.numeric(which.min(aic_bic_x4[2,])+1)
 print(aic_bic_x4)
-<<<<<<< Updated upstream
 # viterbi energy
-m=3
+m=as.numeric(aic_bic_x4[1,len_table])
 initP_last=rep(1/m,m)
-transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
-=======
-
-m=3
-initP_last=rep(1/m,m)
-transP_last=matrix(c(0.8,0.1,0.1,0.1,0.2,0.7,0.6,0.2,0.2),3,3,byrow = TRUE)
->>>>>>> Stashed changes
+transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
 gaus_mean_last=rep(gaus_mean_x4,m)
 gaus_sd_last=rep(gaus_sd_last_x4,m)
 
@@ -126,12 +114,12 @@ gaus_var_est_x4=list_mstep_para_gaus$gaus_var
 path=viterbi_gaus(initP_est_x4,transP_est_x4,gaus_mean_est_x4,gaus_var_est_x4,m,T=length(x4),x4)
 path
 #gaus_mean=gaus_mean_est_x2[order(gaus_mean_est_x2)]
-path[path==1]=gaus_var_est_x4[1]
-path[path==2]=gaus_var_est_x4[2]
-path[path==3]=gaus_var_est_x4[3]
+path[path==1]=gaus_mean_est_x4[1]
+path[path==2]=gaus_mean_est_x4[2]
+path[path==3]=gaus_mean_est_x4[3]
 #path[path==4]=gaus_mean[4]
 path
-plot(x2,type = "l")
+plot(x4,type = "l")
 par(new=TRUE)
 plot(path,type = "l",col="red")
 
@@ -154,7 +142,7 @@ aic_bic_x1=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=3
   initP_last=rep(1/m,m)
-  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+  transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
   lambda_x1=rep(mean_x1,m)
   
   list_mstep_para_pois=EM_pois(T=length(x1),m,x1,lambda_last,
@@ -173,7 +161,7 @@ print(aic_bic_x1)
 #viterbi
 m=2
 initP_last=rep(1/m,m)
-transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
 lambda_last=rep(3000,m)
 
 list_mstep_para_pois=EM_pois(T=length(x1),m,x1,lambda_last,
@@ -208,7 +196,7 @@ aic_bic_x3=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=2
   initP_last=rep(1/m,m)
-  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+  transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
   lambda_x3=rep(mean_x3,m)
   
   list_mstep_para_pois=EM_pois(T=length(x3),m,x3,lambda_last,
@@ -228,7 +216,7 @@ print(aic_bic_x3)
 m=3
 initP_last=rep(1/m,m)
 #transP_last=matrix(c(0.1,0.9,0.8,0.2),2,2,byrow = TRUE)
-transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
 lambda_last=rep(300,m)
 
 list_mstep_para_pois=EM_pois(T=length(x3),m,x3,lambda_last,
@@ -259,7 +247,7 @@ m=as.numeric(aic_bic_x2[1,len_table])
 m=4
 
 initP_last=rep(1/m,m)
-transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+transP_last=matrix(0.3/m,m,m)+matrix(c(rep(0.7,m),rep(0,m*(m-1))),m,m)
 gaus_mean_last=rep(10,m)
 gaus_sd_last=rep(10,m)
 
