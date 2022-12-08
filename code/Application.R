@@ -46,7 +46,7 @@ aic_bic_x2=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=3
   initP_last=rep(1/m,m)
-  transP_last=matrix(1/m,m,m)
+  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
   gaus_mean_last=rep(gaus_mean_x2,m)
   gaus_sd_last=rep(gaus_sd_last_x2,m)
   
@@ -78,7 +78,7 @@ aic_bic_x4=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=3
   initP_last=rep(1/m,m)
-  transP_last=matrix(1/m,m,m)
+  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
   gaus_mean_last=rep(gaus_mean_x4,m)
   gaus_sd_last=rep(gaus_sd_last_x4,m)
   
@@ -95,10 +95,10 @@ for (m in 2:4){
 aic_bic_x4[1,len_table]=as.numeric(which.min(aic_bic_x4[1,])+1)
 aic_bic_x4[2,len_table]=as.numeric(which.min(aic_bic_x4[2,])+1)
 print(aic_bic_x4)
-
+# viterbi energy
 m=3
 initP_last=rep(1/m,m)
-transP_last=matrix(c(0.8,0.1,0.1,0.1,0.2,0.7,0.6,0.2,0.2),3,3,byrow = TRUE)
+transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
 gaus_mean_last=rep(gaus_mean_x4,m)
 gaus_sd_last=rep(gaus_sd_last_x4,m)
 
@@ -127,6 +127,8 @@ plot(path,type = "l",col="red")
 
 
 #pois==============================
+# visitor
+#model select
 data1<-read.csv("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2/data/visitors_rawdata.csv")
 
 samplesize=60
@@ -141,7 +143,7 @@ aic_bic_x1=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=3
   initP_last=rep(1/m,m)
-  transP_last=matrix(1/m,m,m)
+  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
   lambda_x1=rep(mean_x1,m)
   
   list_mstep_para_pois=EM_pois(T=length(x1),m,x1,lambda_last,
@@ -157,10 +159,10 @@ for (m in 2:4){
 aic_bic_x1[1,len_table]=as.numeric(which.min(aic_bic_x1[1,])+1)
 aic_bic_x1[2,len_table]=as.numeric(which.min(aic_bic_x1[2,])+1)
 print(aic_bic_x1)
-
+#viterbi
 m=2
 initP_last=rep(1/m,m)
-transP_last=matrix(c(0.1,0.9,0.8,0.2),2,2)
+transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
 lambda_last=rep(3000,m)
 
 list_mstep_para_pois=EM_pois(T=length(x1),m,x1,lambda_last,
@@ -184,7 +186,7 @@ par(new=TRUE)
 plot(path,type = "l",col="red")
 
 #accident===============================
-
+#model select
 data3<-read.csv("/Users/jiangyunhui/Documents/GitHub/STAT4011-Project-2/data/accident.csv")
 samplesize=60
 x3=data3$x
@@ -195,7 +197,7 @@ aic_bic_x3=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=2
   initP_last=rep(1/m,m)
-  transP_last=matrix(1/m,m,m)
+  transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
   lambda_x3=rep(mean_x3,m)
   
   list_mstep_para_pois=EM_pois(T=length(x3),m,x3,lambda_last,
@@ -211,11 +213,11 @@ for (m in 2:4){
 aic_bic_x3[1,len_table]=as.numeric(which.min(aic_bic_x3[1,])+1)
 aic_bic_x3[2,len_table]=as.numeric(which.min(aic_bic_x3[2,])+1)
 print(aic_bic_x3)
-
+#viterbi
 m=3
 initP_last=rep(1/m,m)
 #transP_last=matrix(c(0.1,0.9,0.8,0.2),2,2,byrow = TRUE)
-transP_last=matrix(c(0.1,0.7,0.2,0.8,0.1,0.1,0.1,0.6,0.3),3,3,byrow = TRUE)
+transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
 lambda_last=rep(300,m)
 
 list_mstep_para_pois=EM_pois(T=length(x3),m,x3,lambda_last,
@@ -239,14 +241,14 @@ par(new=TRUE)
 plot(path,type = "l",col="red")
 
 #Step 3: Parameter Estimation---------------------------------------------------
-
+#viterbi x2
 m=as.numeric(aic_bic_x2[1,len_table])
 
 #m=as.numeric(aic_bic_x2[1,len_table])
 m=4
 
 initP_last=rep(1/m,m)
-transP_last=matrix(1/m,m,m)
+transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
 gaus_mean_last=rep(10,m)
 gaus_sd_last=rep(10,m)
 
