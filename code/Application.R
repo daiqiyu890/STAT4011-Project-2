@@ -78,7 +78,11 @@ aic_bic_x4=array(NA,dim = c(2,len_table),dimnames = list(c('aic','bic'),c(paste0
 for (m in 2:4){
   #m=3
   initP_last=rep(1/m,m)
+<<<<<<< Updated upstream
   transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+=======
+  transP_last=matrix(1/m,m,m)
+>>>>>>> Stashed changes
   gaus_mean_last=rep(gaus_mean_x4,m)
   gaus_sd_last=rep(gaus_sd_last_x4,m)
   
@@ -95,10 +99,17 @@ for (m in 2:4){
 aic_bic_x4[1,len_table]=as.numeric(which.min(aic_bic_x4[1,])+1)
 aic_bic_x4[2,len_table]=as.numeric(which.min(aic_bic_x4[2,])+1)
 print(aic_bic_x4)
+<<<<<<< Updated upstream
 # viterbi energy
 m=3
 initP_last=rep(1/m,m)
 transP_last=matrix(0.3/m,m,m)+diag(0.7,m)
+=======
+
+m=3
+initP_last=rep(1/m,m)
+transP_last=matrix(c(0.8,0.1,0.1,0.1,0.2,0.7,0.6,0.2,0.2),3,3,byrow = TRUE)
+>>>>>>> Stashed changes
 gaus_mean_last=rep(gaus_mean_x4,m)
 gaus_sd_last=rep(gaus_sd_last_x4,m)
 
