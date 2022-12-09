@@ -95,12 +95,12 @@ for (t in 2:T){
 }
 
 png("output/energy_density.png",width=800,height=400)
-par(mar = c(2, 2, 2, 7), xpd = TRUE)
-plot(density(x4))
+par(mar = c(2, 2, 2, 2), xpd = TRUE)
+plot(density(x4),main="")
 par(new=TRUE)
 plot(density(xr),col="red",yaxt="n",xaxt="n",
      main="comparison between simulation and real data")
-legend("topright", inset=c(-0.25, 0),legend=c("real data","simulated data"),
+legend("topright", inset=c(-0, 0),legend=c("real data","simulated data"),
        col=c("black", "red"),lty=1:2,cex = 0.6)
 dev.off()
 
@@ -186,10 +186,11 @@ for (t in 2:T){
 }
 
 png("output/accident_density.png",width=800,height=400)
-par(mar = c(2, 2, 2, 7), xpd = TRUE)
-plot(density(x3))
+par(mar = c(2, 2, 2, 2), xpd = TRUE)
+plot(density(x3),main="")
 par(new=TRUE)
-plot(density(xr),col="red",yaxt="n",xaxt="n")
-legend("topright", inset=c(-0.25, 0),legend=c("original data", "estimated"),
+plot(density(xr),col="red",yaxt="n",xaxt="n",
+     main="comparison between simulation and real data")
+legend("topright", inset=c(-0, 0),legend=c("real data", "simulated data"),
        col=c("black", "red"),lty=1:2,cex = 0.6)
 dev.off()
